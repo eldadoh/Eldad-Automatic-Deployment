@@ -74,13 +74,18 @@ def fetch_thumbnails_product_list_data(NEW_THUMBNAILS_DIR_PATH : str,thumbnailes
     intersection_of_thumnbails_and_product_list = set.intersection(upc_thumbnails_set, upc_product_list_set)
 
 ######################################################################################################################################################################
+    #find intersection - way2 
 
     upc_thumbnails_df_unique_df = pd.DataFrame(upc_thumbnails_df_unique_df)
-    upc_thumbnails_df_unique_df['FROM'] = 'THUMNBAILS'
     upc_product_list_df_unique_df = pd.DataFrame(upc_product_list_df_unique_df)
+
+    upc_thumbnails_df_unique_df.merge(upc_product_list_df_unique_df) #intersection only == same rows 
+
+######################################################################################################################################################################
+    
+    upc_thumbnails_df_unique_df['FROM'] = 'THUMNBAILS'
     upc_product_list_df_unique_df['FROM'] = 'PRODUCT_LIST'
 
-    
     concatenated_by_rows = pd.concat([ upc_thumbnails_df_unique_df, upc_product_list_df_unique_df], axis = 0)
 
 
@@ -89,7 +94,6 @@ def fetch_thumbnails_product_list_data(NEW_THUMBNAILS_DIR_PATH : str,thumbnailes
     concatenated_rows_save_product_list = concatenated_by_rows.drop_duplicates(subset=['UPC'],keep='last')
     concatenated_rows_save_thumbnail.to_csv(os.path.join(OUTPUT_PATH,'concatenated_rows_save_thumbnail.csv'), sep="\t")
     concatenated_rows_save_product_list.to_csv(os.path.join(OUTPUT_PATH,'concatenated_rows_save_product_list.csv'), sep="\t")
-
 
     ######################################################################################################################################################################
 
@@ -124,20 +128,10 @@ def main():
 
     calc_intersection_upc_thumbnails_product_list(concatenated_rows_thumbnail_and_product_list)
 
-
-
-    import pandas as pd
-
     df1 = pd.DataFrame({"A":["A0", "A1", "A2", "A3"]})
     df2 = pd.DataFrame({"A":["B0", "B1", "B2", "A3"]})
     concatenated_rows = pd.concat([df1 , df2], axis = 0)
-    concatenated_rows.drop_duplicates(subset=['A'],keep='first')
-    # df1 = pd.DataFrame({"A":["A0", "A1", "A2", "A3"], "B":[0,1,1,1], "C":["A","A","B","A"]})
-    # df2 = pd.DataFrame({"A":["B0", "B1", "B2", "B3"], "B":[0,1,1,1], "C":["A","A","B","A"]})
-    concatenated_rows = pd.concat([df1 , df2], axis = 0)
-    print(concatenated_rows)
-    print()
-    print(concatenated_rows.drop_duplicates(subset=['A'],keep='first'))
+
     
 if __name__ == "__main__":
     

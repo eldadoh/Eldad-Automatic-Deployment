@@ -85,6 +85,14 @@ def sort_column_df_values_and_dont_change_order_of_other_columns_values(df):
     3  4  1
     """
 
+
+
+def find_intersection_between_df(df1,df2):
+    
+    # intersection == same values for all the columns.
+
+    return df1.merge(df2) 
+
 def series_operations() : 
 
     s = pd.Series([4, 7, -5, 3], index=['d', 'b', 'a', 'c'])
