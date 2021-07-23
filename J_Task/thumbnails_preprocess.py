@@ -4,7 +4,9 @@ import csv
 from typing import List
 from numpy import concatenate
 import pandas as pd 
-import shutil 
+import shutil
+
+from src.pandas_utils import pandas_exp_dataset 
 
 def create_dir_with_override(dir_path : str ) -> None :
     try : 
@@ -122,15 +124,13 @@ def main():
     PRODUCT_LIST_PATH = 'Data/Full_Product_List.csv'
     OUTPUT_PATH = 'Outputs'
 
-    NEW_THUMBNAILS_DIR_PATH,thumbnailes_upc_list = create_fixed_thumbnails_names_dir(THUMBNAILS_DIR_PATH,OUTPUT_PATH)
+    # NEW_THUMBNAILS_DIR_PATH,thumbnailes_upc_list = create_fixed_thumbnails_names_dir(THUMBNAILS_DIR_PATH,OUTPUT_PATH)
 
-    intersection_of_thumnbails_and_product_list, concatenated_cols_thumbnail_and_product_list,concatenated_rows_thumbnail_and_product_list = fetch_thumbnails_product_list_data(NEW_THUMBNAILS_DIR_PATH,thumbnailes_upc_list,OUTPUT_PATH,PRODUCT_LIST_PATH)
+    # intersection_of_thumnbails_and_product_list, concatenated_cols_thumbnail_and_product_list,concatenated_rows_thumbnail_and_product_list = fetch_thumbnails_product_list_data(NEW_THUMBNAILS_DIR_PATH,thumbnailes_upc_list,OUTPUT_PATH,PRODUCT_LIST_PATH)
 
-    calc_intersection_upc_thumbnails_product_list(concatenated_rows_thumbnail_and_product_list)
+    # calc_intersection_upc_thumbnails_product_list(concatenated_rows_thumbnail_and_product_list)
 
-    df1 = pd.DataFrame({"A":["A0", "A1", "A2", "A3"]})
-    df2 = pd.DataFrame({"A":["B0", "B1", "B2", "A3"]})
-    concatenated_rows = pd.concat([df1 , df2], axis = 0)
+    pandas_exp_dataset(show = True)
 
     
 if __name__ == "__main__":

@@ -103,3 +103,20 @@ def series_operations() :
     
     #(users[(users.age == 40) & (users.sex == 'M')].head(3))
     #df.columns = ['a', 'b']
+
+
+def pandas_exp_dataset(show = False):
+
+    df1 = pd.DataFrame({"A":["A0", "A1", "A2", "A3"]})
+    df2 = pd.DataFrame({"A":["B0", "B1", "B2", "A3"]})
+    df3 = pd.DataFrame({"A":["C0", "C1", "C2", "C3"]})
+    
+    res = pd.concat([df1 , df2], axis = 0)
+
+    if show :
+        print(df1)
+        print(df2)
+        print(df3)
+        print(res)
+
+    return res
