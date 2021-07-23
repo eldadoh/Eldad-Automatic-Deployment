@@ -2,10 +2,10 @@ import os
 import glob
 import csv
 from typing import List
-from numpy import concatenate
+from numpy import concatenate, nan
 import pandas as pd 
 import shutil
-
+import numpy as np
 from src.pandas_utils import pandas_exp_dataset 
 
 def create_dir_with_override(dir_path : str ) -> None :
@@ -52,7 +52,7 @@ def create_fixed_thumbnails_names_dir(THUMBNAILS_DIR_PATH : str,OUTPUT_PATH : st
 
     return NEW_THUMBNAILS_DIR_PATH, thumbnailes_upc_list
 
-def fetch_thumbnails_product_list_data(NEW_THUMBNAILS_DIR_PATH : str,thumbnailes_upc_list : list ,OUTPUT_PATH : str , PRODUCT_LIST_PATH : str ) -> csv : 
+def fetch_thumbnails_and_product_list_data(NEW_THUMBNAILS_DIR_PATH : str,thumbnailes_upc_list : list ,OUTPUT_PATH : str , PRODUCT_LIST_PATH : str ) -> csv : 
 
 ######################################################################################################################################################################
 
@@ -63,9 +63,13 @@ def fetch_thumbnails_product_list_data(NEW_THUMBNAILS_DIR_PATH : str,thumbnailes
     upc_thumbnails_df_unique_df.columns = ['UPC']
     upc_thumbnails_df_unique_df = upc_thumbnails_df_unique_df['UPC'].astype(str)
 
+    # upc_thumbnails_df = pd.DataFrame(thumbnailes_upc_list,columns=["UPC"])
     product_list_df = load_df_from_csv(PRODUCT_LIST_PATH,sep =',')
-    upc_product_list_df = product_list_df['UPC']
+    upc_product_list_df = product_list_df[['UPC','2 - CATEGORY','2 - SUB-CATEGORY']]
+    # duplicates_in_product_list = upc_product_list_df[upc_product_list_df.duplicated(keep=False)]
+    # duplicates_in_product_list.to_csv('Outputs/Final/duplicates_in_product_list.csv')
     upc_product_list_df_unique = product_list_df['UPC'].unique()
+
     upc_product_list_set = set(upc_product_list_df_unique) #677 , 668 unique() , 9 duplicates
     upc_product_list_set = {str(num) for num in upc_product_list_df_unique} 
 
@@ -89,8 +93,7 @@ def fetch_thumbnails_product_list_data(NEW_THUMBNAILS_DIR_PATH : str,thumbnailes
     upc_product_list_df_unique_df['FROM'] = 'PRODUCT_LIST'
 
     concatenated_by_rows = pd.concat([ upc_thumbnails_df_unique_df, upc_product_list_df_unique_df], axis = 0)
-
-
+    
     # first is thumbnails , last is product list 
     concatenated_rows_save_thumbnail = concatenated_by_rows.drop_duplicates(subset=['UPC'],keep='first') 
     concatenated_rows_save_product_list = concatenated_by_rows.drop_duplicates(subset=['UPC'],keep='last')
@@ -114,9 +117,18 @@ def fetch_thumbnails_product_list_data(NEW_THUMBNAILS_DIR_PATH : str,thumbnailes
     ######################################################################################################################################################################
     return intersection_of_thumnbails_and_product_list,concatenated_by_cols , concatenated_by_rows
 
-def calc_intersection_upc_thumbnails_product_list(concatenated_rows):
 
-    print()
+
+def process_data_PL_and_Thumbnails(PRODUCT_LIST_PATH,thumbnailes_upc_list : list ,OUTPUT_PATH : str):
+
+    product_list_df = load_df_from_csv(PRODUCT_LIST_PATH,sep =',')
+    product_list_df = product_list_df[['UPC','2 - CATEGORY','2 - SUB-CATEGORY']]
+    product_list_df.columns = ['UPC','CATEGORY','SUB_CATEGORY']
+    product_list_df.to_csv('Outputs/Raw_df/Product_list_df.csv',sep ='\t')
+
+    thumbnails_df = pd.DataFrame(thumbnailes_upc_list,columns=["UPC"])
+    thumbnails_df.to_csv('Outputs/Raw_df/Thumbnails_df.csv',sep ='\t')
+
 
 def main(): 
 
@@ -124,13 +136,15 @@ def main():
     PRODUCT_LIST_PATH = 'Data/Full_Product_List.csv'
     OUTPUT_PATH = 'Outputs'
 
-    # NEW_THUMBNAILS_DIR_PATH,thumbnailes_upc_list = create_fixed_thumbnails_names_dir(THUMBNAILS_DIR_PATH,OUTPUT_PATH)
+    NEW_THUMBNAILS_DIR_PATH,thumbnailes_upc_list = create_fixed_thumbnails_names_dir(THUMBNAILS_DIR_PATH,OUTPUT_PATH)
 
-    # intersection_of_thumnbails_and_product_list, concatenated_cols_thumbnail_and_product_list,concatenated_rows_thumbnail_and_product_list = fetch_thumbnails_product_list_data(NEW_THUMBNAILS_DIR_PATH,thumbnailes_upc_list,OUTPUT_PATH,PRODUCT_LIST_PATH)
+    process_data_PL_and_Thumbnails(PRODUCT_LIST_PATH,thumbnailes_upc_list,OUTPUT_PATH) 
+
+    # intersection_of_thumnbails_and_product_list, concatenated_cols_thumbnail_and_product_list,concatenated_rows_thumbnail_and_product_list = fetch_thumbnails_and_product_list_data(NEW_THUMBNAILS_DIR_PATH,thumbnailes_upc_list,OUTPUT_PATH,PRODUCT_LIST_PATH)
 
     # calc_intersection_upc_thumbnails_product_list(concatenated_rows_thumbnail_and_product_list)
 
-    pandas_exp_dataset(show = True)
+    # pandas_exp_dataset(show = True)
 
     
 if __name__ == "__main__":

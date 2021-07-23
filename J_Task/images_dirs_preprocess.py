@@ -53,7 +53,7 @@ def process_data(dict_ : dict )-> pd.DataFrame:
     
     images_dirs_df = images_dirs_df.reset_index()
 
-    images_dirs_df = images_dirs_df.drop(columns=['index'])
+    images_dirs_df = images_dirs_df.drop(columns=['index','PATH'])
 
     return images_dirs_df 
 
@@ -78,6 +78,7 @@ def fetch_data_from_single_images_dir(IMAGE_DIR_PATH : str,product_name_and_coun
             print('FAILURE : we  Need to override a key , adding \'DUPLICATE\'')
             print(f'to {sub_dir_fixed_name}')
             product_name_and_count_dict[sub_dir_fixed_name + '_DUPLICATE'] = [num_of_images,path_to_class]
+
     
     return product_name_and_count_dict
 
@@ -93,11 +94,16 @@ def fetch_data_from_all_images_dirs(IMAGES_DIR_PATH,OUTPUT_PATH):
 
     images_dirs_df = process_data(product_name_and_count_dict)
 
-    data_file_output_path = os.path.join(OUTPUT_PATH,'images_dirs_data.csv')
+    data_file_output_path = os.path.join(OUTPUT_PATH,'Raw_df/images_dirs_df.csv')
 
     images_dirs_df.to_csv(data_file_output_path,sep ='\t')
    
-    return data_file_output_path
+    return data_file_output_path,images_dirs_df
+
+def get_duplicates_from_df (df) : 
+    
+    df = df[df.duplicated(['UPC'],keep=False)]
+    df.to_csv('Outputs/Final/duplicates_in_'+f'{df}' +'.csv')
 
 def main(): 
 
@@ -105,8 +111,7 @@ def main():
     PRODUCT_LIST_PATH = 'Data/Full_Product_List.csv'
     OUTPUT_PATH = 'Outputs' 
 
-    images_dir_data_file_output_path = fetch_data_from_all_images_dirs(IMAGES_DIR_PATH,OUTPUT_PATH)
-
+    # images_dir_data_file_output_path,images_dirs_df = fetch_data_from_all_images_dirs(IMAGES_DIR_PATH,OUTPUT_PATH)
 
 if __name__ == "__main__":
     
