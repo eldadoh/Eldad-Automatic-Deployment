@@ -6,8 +6,6 @@ from numpy import concatenate
 import pandas as pd 
 import shutil 
 
-from src.pandas_utils import save_dict_as_df 
-
 def merge_dicts(d1,d2) : 
 
     try :
@@ -26,7 +24,40 @@ def create_dir_with_override(dir_path : str ) -> None :
         print('Could not create the desired dir with the corersponding dir path : \n' + f'{dir_path}')
 
 
-def fetch_images_from_single_dir_data(IMAGE_DIR_PATH : str,product_name_and_count_dict):
+def process_data(dict_ : dict )-> pd.DataFrame: 
+    
+    main_data_list,number_of_images_list , path_list = [] , [],[]
+    
+    for key in dict_.keys():
+        number_of_images ,path = dict_[key]
+        number_of_images_list.append(number_of_images)
+        path_list.append(path)
+
+    main_data_list = [number_of_images_list,path_list]
+
+    df = pd.DataFrame(main_data_list).T
+    df.columns = ['Number_of_images','PATH']
+
+
+    upc_as_df = pd.DataFrame(dict_.keys())
+
+    images_dirs_df = pd.concat([upc_as_df,df],axis=1)
+
+    images_dirs_df.columns = ['UPC','Number_of_images','PATH']
+
+    images_dirs_df['FROM'] = 'IMAGES_DIRS'
+ 
+    images_dirs_df = images_dirs_df[['UPC','Number_of_images','FROM', 'PATH']] #change order of columns
+
+    images_dirs_df = images_dirs_df.sort_values('UPC')
+    
+    images_dirs_df = images_dirs_df.reset_index()
+
+    images_dirs_df = images_dirs_df.drop(columns=['index'])
+
+    return images_dirs_df 
+
+def fetch_data_from_single_images_dir(IMAGE_DIR_PATH : str,product_name_and_count_dict):
 
     for sub_dir in os.listdir(IMAGE_DIR_PATH):
 
@@ -36,15 +67,17 @@ def fetch_images_from_single_dir_data(IMAGE_DIR_PATH : str,product_name_and_coun
 
         _ , sub_dir_fixed_name = sub_dir.split(sep = '_')
 
+        path_to_class = os.path.join(os.path.basename(IMAGE_DIR_PATH),sub_dir)
+
         if sub_dir_fixed_name not in product_name_and_count_dict.keys():
         
-            product_name_and_count_dict[sub_dir_fixed_name] = num_of_images
+            product_name_and_count_dict[sub_dir_fixed_name] = [num_of_images,path_to_class]
         
         else : 
 
             print('FAILURE : we  Need to override a key , adding \'DUPLICATE\'')
             print(f'to {sub_dir_fixed_name}')
-            product_name_and_count_dict[sub_dir_fixed_name + '_DUPLICATE'] = num_of_images
+            product_name_and_count_dict[sub_dir_fixed_name + '_DUPLICATE'] = [num_of_images,path_to_class]
     
     return product_name_and_count_dict
 
@@ -56,27 +89,13 @@ def fetch_data_from_all_images_dirs(IMAGES_DIR_PATH,OUTPUT_PATH):
 
         sub_dir_path = os.path.join(IMAGES_DIR_PATH,sub_dir)
 
-        product_name_and_count_dict = fetch_images_from_single_dir_data(sub_dir_path,product_name_and_count_dict)
-    
-    images_dirs_df = save_dict_as_df(product_name_and_count_dict)
+        product_name_and_count_dict = fetch_data_from_single_images_dir(sub_dir_path,product_name_and_count_dict)
 
-    #Process Phase of the Dataframe
-
-    images_dirs_df.columns = ['UPC', 'Number_of_Images'] # give names to columns
-
-    images_dirs_df['FROM'] = 'IMAGES_DIRS'
- 
-    images_dirs_df = images_dirs_df[['UPC', 'FROM', 'Number_of_Images']] #change order of columns
-
-    images_dirs_df = images_dirs_df.sort_values('UPC')
-    
-    images_dirs_df = images_dirs_df.reset_index()
-
-    images_dirs_df = images_dirs_df.drop(columns=['index'])
+    images_dirs_df = process_data(product_name_and_count_dict)
 
     data_file_output_path = os.path.join(OUTPUT_PATH,'images_dirs_data.csv')
 
-    images_dirs_df.to_csv(data_file_output_path)
+    images_dirs_df.to_csv(data_file_output_path,sep ='\t')
    
     return data_file_output_path
 
