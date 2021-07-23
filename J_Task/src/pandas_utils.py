@@ -1,5 +1,5 @@
 import pandas as pd 
-import numpy as np
+import os
 
 def load_df_from_csv(csv_file_path:str) -> pd.DataFrame :
 
@@ -33,7 +33,8 @@ def load_df_from_dict(dict_):
 
 def save_dict_as_df(dict_ : dict )-> pd.DataFrame: 
 
-    return pd.DataFrame.from_dict(dict_,orient='index')
+    # return pd.DataFrame.from_dict(dict_,orient='index')
+    return pd.DataFrame(dict_.items()) 
 
 def load_series_from_dict(dict_):
     return pd.Series(dict_)
@@ -120,3 +121,25 @@ def pandas_exp_dataset(show = False):
         print(res)
 
     return res
+
+def general_process_of_a_df(dict_,OUTPUT_PATH):
+
+    df = save_dict_as_df(dict_)
+
+    #Process Phase of the Dataframe
+
+    df.columns = ['UPC', 'Number_of_Images'] # give names to columns
+
+    df['FROM'] = 'IMAGES_DIRS'
+ 
+    df = df[['UPC', 'FROM', 'Number_of_Images']] #change order of columns
+
+    df = df.sort_values('UPC')
+    
+    df = df.reset_index()
+
+    df = df.drop(columns=['index'])
+
+    data_file_output_path = os.path.join(OUTPUT_PATH,'images_dirs_data.csv')
+
+    df.to_csv(data_file_output_path)
