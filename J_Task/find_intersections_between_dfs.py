@@ -4,7 +4,6 @@ import csv
 import pandas as pd 
 import shutil 
 
-
 def main(): 
 
     IMAGES_DIRS__DATA_FILE_PATH = 'Outputs/images_dirs_data.csv'
