@@ -34,17 +34,20 @@ def main():
     product_list_df['UPC'] = product_list_df['UPC'].astype(str)
     product_list_df = product_list_df.drop(columns=['Unnamed: 0'])
     product_list_df['Product_List'] = 'Yes' 
-    product_list_df.to_csv('Outputs/Final/product_list_df.csv')
-
+    product_list_df.to_csv('Outputs/product_list_df.csv')
+    
     images_dir_df['UPC'] = images_dir_df['UPC'].astype(str)
     images_dir_df['Number_of_images'] = images_dir_df['Number_of_images'].astype(str)
     images_dir_df = images_dir_df.drop(columns=['Unnamed: 0','FROM'])
     images_dir_df['Image_Dirs'] = 'Yes' 
-    images_dir_df = images_dir_df[['UPC','Image_Dirs','Number_of_images']] 
+    images_dir_df = images_dir_df[['UPC','Image_Dirs','Number_of_images']]
+    images_dir_df.to_csv('Outputs/images_dir_df.csv')
+
 
     thumbnails_df['UPC'] = thumbnails_df['UPC'].astype(str)
     thumbnails_df = thumbnails_df.drop(columns=['Unnamed: 0'])
     thumbnails_df['Thumbnails'] = 'Yes'
+    thumbnails_df.to_csv('Outputs/thumbnails_df.csv')
 
 
     merged_outer = pd.merge(product_list_df,images_dir_df,how = 'outer' , on = 'UPC') # (682,6)
@@ -61,8 +64,8 @@ def main():
     res_df[['CATEGORY','SUB_CATEGORY','Number_of_images']] = res_df[['CATEGORY','SUB_CATEGORY','Number_of_images']].fillna(value = '--')
 
     res_df = res_df[['UPC',	'CATEGORY',	'SUB_CATEGORY',	'Product_List',	'Image_Dirs','Thumbnails','Number_of_images']]
-
-    print(res_df.tail(20))
+    res_df.to_csv('Outputs/res_df.csv')
+    # print(res_df.tail(20))
 
     # get_duplicates_from_df(product_list_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'product_list')
     # get_duplicates_from_df(thumbnails_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'thumbnails_df')
