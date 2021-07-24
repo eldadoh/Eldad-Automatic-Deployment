@@ -50,13 +50,14 @@ def main():
     thumbnails_df.to_csv('Outputs/thumbnails_df.csv')
 
 
+    product_list_df.shape , images_dir_df.shape ,thumbnails_df.shape #((677, 4), (285, 3)) ,(611, 2)
+    product_list_df.dtypes , images_dir_df.dtypes, thumbnails_df.dtypes  # all object dtype
+
     merged_outer = pd.merge(product_list_df,images_dir_df,how = 'outer' , on = 'UPC') # (682,6)
     merged_inner = pd.merge(product_list_df,images_dir_df,how = 'inner' , on = 'UPC') # (293,6)
     merged_left = pd.merge(product_list_df,images_dir_df,how = 'left' , on = 'UPC') # (677,6)
     merged_right = pd.merge(product_list_df,images_dir_df,how = 'right' , on = 'UPC') # (298,6)
 
-    product_list_df.shape , images_dir_df.shape ,thumbnails_df.shape #((677, 4), (285, 3)) ,(611, 2)
-    product_list_df.dtypes , images_dir_df.dtypes, thumbnails_df.dtypes  # all object dtype
     merged_inner.shape,merged_outer.shape,merged_left.shape,merged_right.shape # ((293, 6), (682, 6), (677, 6), (298, 6))
 
     res_df = pd.merge(merged_outer,thumbnails_df,how = 'outer' , on = 'UPC') # (293,6)
@@ -65,10 +66,9 @@ def main():
 
     res_df = res_df[['UPC',	'CATEGORY',	'SUB_CATEGORY',	'Product_List',	'Image_Dirs','Thumbnails','Number_of_images']]
     res_df.to_csv('Outputs/res_df.csv')
-    # print(res_df.tail(20))
 
-    # get_duplicates_from_df(product_list_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'product_list')
-    # get_duplicates_from_df(thumbnails_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'thumbnails_df')
+    get_duplicates_from_df(product_list_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'product_list')
+    get_duplicates_from_df(thumbnails_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'thumbnails_df')
     
 
 if __name__ == "__main__":
