@@ -26,7 +26,7 @@ def create_dir_with_override(dir_path : str ) -> None :
 
 def process_data(dict_ : dict )-> pd.DataFrame: 
     
-    main_data_list,number_of_images_list , path_list = [] , [],[]
+    main_data_list,number_of_images_list , path_list = [], [], []
     
     for key in dict_.keys():
         number_of_images ,path = dict_[key]
