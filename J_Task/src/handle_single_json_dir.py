@@ -117,12 +117,36 @@ def handle_json_all_products_dir(json_main_path,save = True,print = False):
 
     return single_product_annotations_df , missing_result_list  
 
+def handle_single_json_file_type2(JSON_FILE_PATH):
+
+    with open ('Outputs/json_parsed.csv','w') as w :
+        with open(JSON_FILE_PATH, 'r') as f:
+
+            data = json.load(f)
+            images_list_to_parse = data['images']
+
+            for img in images_list_to_parse:
+                
+                image_name = img['image_name']
+                
+                try:
+                    labels_list = img['labels']
+                    for label in labels_list : 
+                        class_name = label['class_name']
+                        x1,y1,x2,y2 = label['bbox']
+                        write_ = f'{str(image_name)},{class_name},{str(x1)},{str(y1)},{str(x2)},{str(y2)}\n'
+                        w.write(write_)
+                except Exception as e :
+                    print('no labels for the current img')
+
+
 if __name__ == '__main__':
 
     # json_dir_path  = 'Data/annotations/json/0011110353986'
     # handle_single_json_product_dir(json_dir_path)
 
+    JSON_FILE_PATH = 'Data/Israeli Snacks Batch Number 1.json'
     JSON_MAIN_DIR_PATH = 'Data/annotations/json'
 
-    handle_json_all_products_dir(JSON_MAIN_DIR_PATH,save = True,print = False)
-    
+    # handle_json_all_products_dir(JSON_MAIN_DIR_PATH,save = True,print = False)
+    handle_single_json_file_type2(JSON_FILE_PATH)
