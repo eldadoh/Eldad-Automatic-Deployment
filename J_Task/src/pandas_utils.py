@@ -1,6 +1,6 @@
 import pandas as pd 
 import os
-
+import numpy as np
 
 def load_df_from_csv(csv_file_path:str) -> pd.DataFrame :
 
@@ -145,3 +145,25 @@ def general_process_of_a_df(dict_,OUTPUT_PATH):
     data_file_output_path = os.path.join(OUTPUT_PATH,'images_dirs_data.csv')
 
     df.to_csv(data_file_output_path)
+
+def df_apply_function(dfObj) : 
+    """apply function to all column/row values """
+    #col
+    modDfObj = dfObj.apply(lambda x: np.square(x) if x.name == 'z' else x)
+    dfObj['z'] = dfObj['z'].apply(np.square)
+    dfObj['z'] = np.square(dfObj['z'])
+    #rows 
+    modDfObj = dfObj.apply(lambda x: np.square(x) if x.name == 'b' else x, axis=1)
+    dfObj.loc['b'] = dfObj.loc['b'].apply(np.square)
+    dfObj.loc['b'] = np.square(dfObj.loc['b'])
+
+def how_to_grow_df(some_function_that_yields_data) : 
+    
+    #append all data to a list , then create a df with
+    data = []
+    for a, b, c in some_function_that_yields_data():
+         data.append([a, b, c])
+
+    df = pd.DataFrame(data, columns=['A', 'B', 'C'])
+
+    return df 
