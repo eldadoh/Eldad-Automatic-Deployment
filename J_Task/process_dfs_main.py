@@ -13,7 +13,11 @@ def load_df_from_csv(csv_file_path:str, sep = ',') -> pd.DataFrame :
 def get_duplicates_from_df (df,key,Output_path,NAME_OF_DF) : 
     
     df = df[df.duplicated(f'{key}',keep=False)]
-    df = df.drop(columns=['Unnamed: 0'])
+    try: 
+        df = df.drop(columns=['Unnamed: 0'])
+    except:
+        pass
+    
     df = df.sort_values(f'{key}')
     df.to_csv(f'{Output_path}/duplicates_in_'+f'{NAME_OF_DF}' +'.csv')
 
@@ -28,7 +32,7 @@ def main():
     FINAL_OUTPUTS_DIR_PATH = 'Outputs/Final'
 
     product_list_df = load_df_from_csv(PRODUCT_LIST__CSV_PATH,sep ='\t')
-    images_dir_df = load_df_from_csv(IMAGES_DIRS__CSV_PATH,sep ='\t')
+    images_dir_df = load_df_from_csv(IMAGES_DIRS__CSV_PATH,sep =',')
     thumbnails_df = load_df_from_csv(THUMNBAILS_DIR_CSV_PATH,sep ='\t')
 
     product_list_df['UPC'] = product_list_df['UPC'].astype(str)
@@ -67,9 +71,9 @@ def main():
     res_df = res_df[['UPC',	'CATEGORY',	'SUB_CATEGORY',	'Product_List',	'Image_Dirs','Thumbnails','Number_of_images']]
     res_df.to_csv('Outputs/res_df.csv')
 
-    get_duplicates_from_df(product_list_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'product_list')
-    get_duplicates_from_df(thumbnails_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'thumbnails_df')
-    
+    # get_duplicates_from_df(product_list_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'product_list')
+    # get_duplicates_from_df(thumbnails_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'thumbnails_df')
+    # get_duplicates_from_df(images_dir_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'images_dir_df')
 
 if __name__ == "__main__":
     
