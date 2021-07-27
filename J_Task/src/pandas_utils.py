@@ -5,14 +5,9 @@ import numpy as np
 def load_df_from_csv(csv_file_path:str) -> pd.DataFrame :
 
     df = pd.read_csv(csv_file_path,sep='\t')
-
+    # df = pd.read_csv(csv_file_path,sep=',')
+    
     return df 
-
-def load_df_from_pkl(name : str) -> pd.DataFrame :
-
-    if '.pkl' in name : 
-
-        return pd.read_pickle(name)
 
 def load_df_from_xl(file_name,sheet_name = None):
     
@@ -29,17 +24,15 @@ def load_df_from_xl(file_name,sheet_name = None):
 
 def load_df_from_dict(dict_): 
 
-    return pd.DataFrame.from_dict([dict_])
-    # return pd.DataFrame.from_dict(dict_, orient='index') # if you want keys  be the index names . 
+    return pd.DataFrame.from_dict(dict_,orient="index").reset_index()
 
-def save_dict_as_df(dict_ : dict )-> pd.DataFrame: 
+def load_df_from_pkl(name : str) -> pd.DataFrame :
 
-    # return pd.DataFrame.from_dict(dict_,orient='index')
-    return pd.DataFrame(dict_.items()) 
+    if '.pkl' in name : 
+
+        return pd.read_pickle(name)
 
 
-def load_series_from_dict(dict_):
-    return pd.Series(dict_)
 
 def save_df_as_csv(df : pd.DataFrame,name:str):
 

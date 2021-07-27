@@ -70,9 +70,12 @@ def main():
   res_df.to_csv(os.path.join(f'{OUTPUT_PATH}','res_df_kids.csv'),sep='\t')
   
   fixed_annotations_perfect  = pd.DataFrame.from_dict(fixed_annotations_perfect,orient="index").reset_index()
+  
   fixed_annotations_sku  = pd.DataFrame.from_dict(fixed_annotations_sku,orient="index").reset_index()
-  res_df.to_csv(os.path.join(f'{OUTPUT_PATH}','fixed_annotations_perfect.csv'),sep='\t')
-  res_df.to_csv(os.path.join(f'{OUTPUT_PATH}','fixed_annotations_sku.csv'),sep='\t')
+  fixed_annotations_perfect.columns , fixed_annotations_sku.columns = ['old','new'] , ['old','new']
+
+  fixed_annotations_perfect.to_csv(os.path.join(f'{OUTPUT_PATH}','fixed_annotations_perfect.csv'),sep='\t')
+  fixed_annotations_sku.to_csv(os.path.join(f'{OUTPUT_PATH}','fixed_annotations_sku.csv'),sep='\t')
 
   print()
 
