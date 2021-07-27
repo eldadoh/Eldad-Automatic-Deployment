@@ -8,12 +8,16 @@ import itertools
 
 def main(): 
 
-  fixed_annotations_perfect  = dict()
+  VALID_ANNOTATIONS_FILE_PATH = 'Data/Annotation_Verifcation/valid_kids_annotations.csv'
+  ANNOTATIONS_TO_CHECK_PATH = 'Data/Annotation_Verifcation/raw/annotations_to_check_3.csv'
+  OUTPUT_PATH = 'Outputs/Annotations-Verification'
+
+  annotations_perfect  = dict()
   fixed_annotations_sku  = dict()
 
   def perfect_match(x):
       if x in valid_annotations_as_list : 
-          fixed_annotations_perfect[f'{x}'] = x 
+          annotations_perfect[f'{x}'] = x 
       return 1 if x in valid_annotations_as_list else 0 
 
   def sku_match(x):
@@ -42,9 +46,7 @@ def main():
   def description_match_case_senstive(x):
         return 1 if (x.split('_')[-1]).lower() in valid_description_list_case_senstive or (x.split(' - ')[-1]).lower() in valid_description_list_case_senstive else 0 
 
-  VALID_ANNOTATIONS_FILE_PATH = 'Data/Annotation_Verifcation/valid_kids_annotations.csv'
-  ANNOTATIONS_TO_CHECK_PATH = 'Data/Annotation_Verifcation/raw/annotations_to_check_3.csv'
-  OUTPUT_PATH = 'Outputs/Annotations-Verification'
+
   
   valid_df = pd.read_csv(VALID_ANNOTATIONS_FILE_PATH,sep=',')
   check_df = pd.read_csv(ANNOTATIONS_TO_CHECK_PATH,sep=',')
@@ -65,16 +67,13 @@ def main():
   res_df['Description_match'] = res_df['string_to_check'].apply(description_match)
   res_df['Description_match_case_senstive'] = res_df['string_to_check'].apply(description_match_case_senstive)
   res_df['_bbox_count'] = check_df['bbox count']
-  
   res_df = res_df.sort_values('Perfect_match',ascending=False)
   res_df.to_csv(os.path.join(f'{OUTPUT_PATH}','res_df_kids.csv'),sep='\t')
   
-  fixed_annotations_perfect  = pd.DataFrame.from_dict(fixed_annotations_perfect,orient="index").reset_index()
-  
+  annotations_perfect  = pd.DataFrame.from_dict(annotations_perfect,orient="index").reset_index()
   fixed_annotations_sku  = pd.DataFrame.from_dict(fixed_annotations_sku,orient="index").reset_index()
-  fixed_annotations_perfect.columns , fixed_annotations_sku.columns = ['old','new'] , ['old','new']
-
-  fixed_annotations_perfect.to_csv(os.path.join(f'{OUTPUT_PATH}','fixed_annotations_perfect.csv'),sep='\t')
+  annotations_perfect.columns , fixed_annotations_sku.columns = ['old','new'] , ['old','new']
+  annotations_perfect.to_csv(os.path.join(f'{OUTPUT_PATH}','fixed_annotations_perfect.csv'),sep='\t')
   fixed_annotations_sku.to_csv(os.path.join(f'{OUTPUT_PATH}','fixed_annotations_sku.csv'),sep='\t')
 
   print()
