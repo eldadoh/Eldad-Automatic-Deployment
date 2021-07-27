@@ -8,14 +8,37 @@ import itertools
 
 def main(): 
 
+  fixed_annotations_perfect  = dict()
+  fixed_annotations_sku  = dict()
+
   def perfect_match(x):
-        return 1 if x in valid_annotations_as_list else 0 
+      if x in valid_annotations_as_list : 
+          fixed_annotations_perfect[f'{x}'] = x 
+      return 1 if x in valid_annotations_as_list else 0 
 
   def sku_match(x):
-        return 1 if x.split('_')[0] in valid_sku_list or x.split(' - ')[0] in valid_sku_list else 0 
+      if x.split('_')[0] in valid_sku_list :
+        try:   
+            first_part,second_part = x.split('_')
+            new_annotation = first_part + ' - ' + second_part
+            if new_annotation in valid_annotations_as_list:
+                fixed_annotations_sku[f'{x}'] = new_annotation 
+        except: 
+            pass
+      if x.split(' - ')[0] in valid_sku_list :
+       try: 
+            first_part,second_part = x.split(' - ')
+            new_annotation = first_part + '_' + second_part
+            if new_annotation in valid_annotations_as_list:
+                fixed_annotations_sku[f'{x}'] = new_annotation 
+       except: 
+            pass
+      return 1 if x.split('_')[0] in valid_sku_list or x.split(' - ')[0] in valid_sku_list else 0 
 
   def description_match(x):
-        return 1 if x.split('_')[-1] in valid_description_list or x.split(' - ')[-1] in valid_description_list else 0 
+    #   if x.split('_')[-1] in valid_description_list or x.split(' - ')[-1] in valid_description_list:
+    #     fixed_annotations[f'{x}'] = x   
+      return 1 if x.split('_')[-1] in valid_description_list or x.split(' - ')[-1] in valid_description_list else 0 
   def description_match_case_senstive(x):
         return 1 if (x.split('_')[-1]).lower() in valid_description_list_case_senstive or (x.split(' - ')[-1]).lower() in valid_description_list_case_senstive else 0 
 
@@ -45,6 +68,16 @@ def main():
   
   res_df = res_df.sort_values('Perfect_match',ascending=False)
   res_df.to_csv(os.path.join(f'{OUTPUT_PATH}','res_df_kids.csv'),sep='\t')
+  
+  fixed_annotations_perfect  = pd.DataFrame.from_dict(fixed_annotations_perfect,orient="index").reset_index()
+  fixed_annotations_sku  = pd.DataFrame.from_dict(fixed_annotations_sku,orient="index").reset_index()
+  res_df.to_csv(os.path.join(f'{OUTPUT_PATH}','fixed_annotations_perfect.csv'),sep='\t')
+  res_df.to_csv(os.path.join(f'{OUTPUT_PATH}','fixed_annotations_sku.csv'),sep='\t')
+
+  print()
+
+
+  
 
 if __name__ == "__main__":
 
