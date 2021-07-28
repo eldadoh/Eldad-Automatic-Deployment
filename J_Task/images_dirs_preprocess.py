@@ -113,6 +113,12 @@ def main():
 
     # images_dir_data_file_output_path,images_dirs_df = fetch_data_from_all_images_dirs(IMAGES_DIR_PATH,OUTPUT_PATH)
 
+    data = pd.read_csv('Data/Images_dirs/missing_folders.txt', sep=" ", header=None)
+    data.columns = ["UPC"]
+    data_file_output_path = os.path.join(OUTPUT_PATH,'Raw_df/images_dirs_df.csv')
+    data.to_csv(data_file_output_path,sep ='\t')
+
+
 if __name__ == "__main__":
     
     main()

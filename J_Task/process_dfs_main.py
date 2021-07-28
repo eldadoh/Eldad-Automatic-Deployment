@@ -32,7 +32,7 @@ def main():
     FINAL_OUTPUTS_DIR_PATH = 'Outputs/Final'
 
     product_list_df = load_df_from_csv(PRODUCT_LIST__CSV_PATH,sep ='\t')
-    images_dir_df = load_df_from_csv(IMAGES_DIRS__CSV_PATH,sep =',')
+    images_dir_df = load_df_from_csv(IMAGES_DIRS__CSV_PATH,sep ='\t')
     thumbnails_df = load_df_from_csv(THUMNBAILS_DIR_CSV_PATH,sep ='\t')
 
     product_list_df['UPC'] = product_list_df['UPC'].astype(str)
@@ -41,10 +41,11 @@ def main():
     product_list_df.to_csv('Outputs/product_list_df.csv')
     
     images_dir_df['UPC'] = images_dir_df['UPC'].astype(str)
-    images_dir_df['Number_of_images'] = images_dir_df['Number_of_images'].astype(str)
-    images_dir_df = images_dir_df.drop(columns=['Unnamed: 0','FROM'])
+    # images_dir_df['Number_of_images'] = images_dir_df['Number_of_images'].astype(str)
+    images_dir_df = images_dir_df.drop(columns=['Unnamed: 0'])
     images_dir_df['Image_Dirs'] = 'Yes' 
-    images_dir_df = images_dir_df[['UPC','Image_Dirs','Number_of_images']]
+    # images_dir_df = images_dir_df[['UPC','Image_Dirs','Number_of_images']]
+    # images_dir_df = images_dir_df[['UPC']]
     images_dir_df.to_csv('Outputs/images_dir_df.csv')
 
 
@@ -66,14 +67,14 @@ def main():
 
     res_df = pd.merge(merged_outer,thumbnails_df,how = 'outer' , on = 'UPC') # (293,6)
     res_df[['Product_List','Image_Dirs','Thumbnails']] = res_df[['Product_List','Image_Dirs','Thumbnails']].fillna(value = 'No')
-    res_df[['CATEGORY','SUB_CATEGORY','Number_of_images']] = res_df[['CATEGORY','SUB_CATEGORY','Number_of_images']].fillna(value = '--')
+    res_df[['CATEGORY','SUB_CATEGORY']] = res_df[['CATEGORY','SUB_CATEGORY']].fillna(value = '--')
 
-    res_df = res_df[['UPC',	'CATEGORY',	'SUB_CATEGORY',	'Product_List',	'Image_Dirs','Thumbnails','Number_of_images']]
+    res_df = res_df[['UPC',	'CATEGORY',	'SUB_CATEGORY',	'Product_List',	'Image_Dirs','Thumbnails']]
     res_df.to_csv('Outputs/res_df.csv')
 
-    # get_duplicates_from_df(product_list_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'product_list')
-    # get_duplicates_from_df(thumbnails_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'thumbnails_df')
-    # get_duplicates_from_df(images_dir_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'images_dir_df')
+    get_duplicates_from_df(product_list_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'product_list')
+    get_duplicates_from_df(thumbnails_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'thumbnails_df')
+    get_duplicates_from_df(images_dir_df,'UPC',DUPLICATES_DIR_OUTPUT_PATH,NAME_OF_DF = 'images_dir_df')
 
 if __name__ == "__main__":
     
