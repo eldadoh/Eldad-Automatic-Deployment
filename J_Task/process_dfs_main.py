@@ -24,6 +24,9 @@ def get_duplicates_from_df (df,key,Output_path,NAME_OF_DF) :
 
 def main(): 
 
+    DAIRY_OLD_PATH = 'J_Task/Data/Dor-alon-files/sku-old.csv'
+    DAIRY_NEW_PATH = 'J_Task/Data/Dor-alon-files/sku-new.csv'
+
     IMAGES_DIRS__CSV_PATH = 'Outputs/Raw_df/images_dirs_df.csv'
     PRODUCT_LIST__CSV_PATH = 'Outputs/Raw_df/Product_list_df.csv'
     THUMNBAILS_DIR_CSV_PATH = 'Outputs/Raw_df/Thumbnails_df.csv' 
