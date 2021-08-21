@@ -17,34 +17,10 @@ def load_df_from_csv(csv_file_path:str, sep:str = ',') -> pd.DataFrame :
     return df 
 
 
-# visualizations : 
-
-# download deployment as csv from google drive . this is the script input 
-
-# from the deployment , load to pandas as csv , remove duplicates(use unique) , now you got table of categories and specific models
-
-# for each model name : i.e('hybrid-dubonim-kefli-cheetos_20-22-10_19-08-2021')
-# 	reverse the model name string , and fetch the date ,i.e 19-08-2021 ,sep='_', 
-# 	start build the evaluation.csv download command :
-# 	evaluation_file_path = os.path.join('shelfauditdec19.appspot.com/CVModels' , date) 
-# 	evaluation_file_path = os.path.join(path , f'{model_name} + '_results') 
-# 	evaluation_file_path = os.path.join(path , 'evaluation.csv') 
-# 	command = os.system ('gsutil cp {evaluation_file_path}  {Outputp_path}')
-
-#     plot_evaluation_results(file_path = os.path.join(Outputp_path,'evaluation.csv')	
-	
-	
-# 	shelfauditdec19.appspot.com/CVModels/19-08-2021/hybrid-dubonim-kefli-cheetos_20-22-10_19-08-2021_results
-
-
-#for each deployment.csv with model names plots all the models evaluation plots#
-
-
-def download_and_rename(evaluation_file_paths,RESULTS_DIR_PATH):
+def download_and_log(evaluation_file_paths,RESULTS_DIR_PATH):
 
     for file_path in evaluation_file_paths :
-
-
+        
         model_name = os.path.split(file_path)[0]
         model_name = os.path.split(model_name)[-1]
         os.system(f'gsutil -m cp {file_path} {RESULTS_DIR_PATH}')
@@ -81,8 +57,10 @@ def main():
     evaluation_file_paths = [os.path.join(path , f'{model_name}' + '_results') for path,model_name in zip(evaluation_file_paths,models_list)]
     evaluation_file_paths = [os.path.join(path , 'evaluation.csv') for path in evaluation_file_paths]  
     
-    # download_and_rename(evaluation_file_paths,RESULTS_DIR_PATH)
+    # download_and_log(evaluation_file_paths,RESULTS_DIR_PATH)
     
+    
+
 if __name__ == "__main__":
     
     main()
