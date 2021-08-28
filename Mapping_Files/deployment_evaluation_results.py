@@ -1,3 +1,5 @@
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 import pandas as pd 
 import os,glob,shutil
 import matplotlib
@@ -5,6 +7,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt 
 from matplotlib import rcParams
 rcParams.update({'figure.autolayout': True})
+rcParams.update({'figure.max_open_warning': 0})
 
 def create_dir_with_override(dir_path):
     try : 
