@@ -78,15 +78,15 @@ def main():
     if you want to override the older plots Turn OVERRIDE = True
     """
 
-    OVERRIDE = False
+    OVERRIDE = True
     DEPLOYMENT_CSV_PATH = 'Data/Deployments_Data_sheets/Dor Alon - CV Models Category Map 15 - DorAlonStores1.csv'
     
     OUTPUT_DIR_PATH ='Output/Deployment_Evaluation_Plots'
     RESULTS_DIR_NAME = os.path.split(DEPLOYMENT_CSV_PATH)[-1][:-len('.csv')]
     RESULTS_DIR_NAME = RESULTS_DIR_NAME.replace(' ','_')
     RESULTS_DIR_PATH = os.path.join(OUTPUT_DIR_PATH,RESULTS_DIR_NAME)
-    PLOTS_DIR_PATH = os.path.join(RESULTS_DIR_PATH,'Plots')
-    LOGS_DIR_PATH = os.path.join(RESULTS_DIR_PATH,'Logs')
+    PLOTS_DIR_PATH = os.path.join(RESULTS_DIR_PATH,'Plots_' + f'{os.path.basename(RESULTS_DIR_PATH)}')
+    LOGS_DIR_PATH = os.path.join(RESULTS_DIR_PATH,'Logs_' + f'{os.path.basename(RESULTS_DIR_PATH)}')
     if OVERRIDE :
         create_dirs(RESULTS_DIR_PATH,PLOTS_DIR_PATH,LOGS_DIR_PATH)
 
