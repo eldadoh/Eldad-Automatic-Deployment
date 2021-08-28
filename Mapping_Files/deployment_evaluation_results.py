@@ -82,7 +82,7 @@ def main():
     """
 
     OVERRIDE = True
-    DEPLOYMENT_CSV_PATH = 'Data/Deployments_Data_sheets/Dor Alon - CV Models Category Map 15 - DorAlonStores1.csv'
+    DEPLOYMENT_CSV_PATH = 'Data/Deployments_Data_sheets/Dor Alon - CV Models Category Map 14 - DorAlonStores1.csv'
     
     OUTPUT_DIR_PATH ='Output/Deployment_Evaluation_Plots'
     RESULTS_DIR_NAME = os.path.split(DEPLOYMENT_CSV_PATH)[-1][:-len('.csv')]
